@@ -12,29 +12,27 @@ import com.hmdp.entity.User;
 import com.hmdp.mapper.UserMapper;
 import com.hmdp.service.IUserService;
 import com.hmdp.utils.RegexUtils;
+import com.hmdp.utils.UserHolder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
+import org.springframework.data.redis.connection.BitFieldSubCommands;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import static com.hmdp.utils.RedisConstants.*;
 import static com.hmdp.utils.SystemConstants.USER_NICK_NAME_PREFIX;
 
-/**
- * <p>
- * 服务实现类
- * </p>
- *
- * @author
- * @since 2021-12-22
- */
 @Slf4j
 @Service
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IUserService {
@@ -104,6 +102,63 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
 
         // save
         return Result.ok(token);
+    }
+
+    @Override
+    public Result sign() {
+        // 1. Get the currently logged-in user
+        Long userId = UserHolder.getUser().getId();
+        // 2. Get the current date
+        LocalDateTime now = LocalDateTime.now();
+        // 3. Build the key
+        String keySuffix = now.format(DateTimeFormatter.ofPattern(":yyyyMM"));
+        String key = USER_SIGN_KEY + userId + keySuffix;
+        // 4. Get today’s day-of-month index
+        int dayOfMonth = now.getDayOfMonth();
+        // 5. Write to Redis: SETBIT key offset 1
+        stringRedisTemplate.opsForValue().setBit(key, dayOfMonth - 1, true);
+        return Result.ok();
+    }
+
+    @Override
+    public Result signCount() {
+        // 1. Get the currently logged-in user
+        Long userId = UserHolder.getUser().getId();
+        // 2. Get the current date
+        LocalDateTime now = LocalDateTime.now();
+        // 3. Build the key
+        String keySuffix = now.format(DateTimeFormatter.ofPattern(":yyyyMM"));
+        String key = USER_SIGN_KEY + userId + keySuffix;
+        // 4. Get today’s day-of-month index
+        int dayOfMonth = now.getDayOfMonth();
+        // 5. Retrieve all sign-in records of the current month up to today; the result is a decimal number
+        List<Long> result = stringRedisTemplate.opsForValue().bitField(
+                key,
+                BitFieldSubCommands.create()
+                        .get(BitFieldSubCommands.BitFieldType.unsigned(dayOfMonth)).valueAt(0)
+        );
+        if (result == null || result.isEmpty()) {
+            return Result.ok(0);
+        }
+        Long num = result.get(0);
+        if (num == null || num == 0) {
+            return Result.ok(0);
+        }
+        // 6. Loop through the bits
+        int count = 0;
+        while (true) {
+            // 6.1 Perform a bitwise AND with 1 to get the last bit of the number // Check whether this bit is 0
+            if ((num & 1) == 0) {
+                // If it is 0, it means the user did not sign in; end the process
+                break;
+            } else {
+                // If it is not 0, it means the user has signed in; increment the counter by 1
+                count++;
+            }
+            // Right-shift the number by one bit, discard the last bit, and continue to the next bit
+            num >>>= 1;
+        }
+        return Result.ok(count);
     }
 
     private User createUserWithPhone(String phone) {
