@@ -35,7 +35,10 @@ public class MvcConfig implements WebMvcConfigurer {
                         "/upload/**",
                         "/blog/**",
                         "/follow/**",
-                        "/user/**"
+                        "/user/**",
+                        "/swagger-ui/**",
+                        "/v3/api-docs/**",
+                        "/swagger-ui.html"
                 ).order(1);
         registry.addInterceptor(new RefreshInterceptor(stringRedisTemplate)).addPathPatterns("/**").order(0);
     }
