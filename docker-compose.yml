@@ -1,0 +1,56 @@
+services:
+  # ── MySQL ─────────────────────────────────────────────
+  mysql:
+    image: mysql:8.0
+    command: --sql-mode="NO_ENGINE_SUBSTITUTION"
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD:?Set DB_PASSWORD in .env}
+      MYSQL_DATABASE: locale            # auto-creates this database on first start
+    ports:
+      - "3307:3306"
+    volumes:
+      # Mount the SQL file so MySQL auto-imports it on first start
+      - ./src/main/resources/db/locale.sql:/docker-entrypoint-initdb.d/locale.sql
+      # Persist data across container restarts
+      - mysql-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ── Redis ─────────────────────────────────────────────
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6380:6379"
+    volumes:
+      - redis-data:/data
+
+  # ── Spring Boot App ───────────────────────────────────
+  app:
+    build:
+      context: .                      # build from Dockerfile in current directory
+      dockerfile: Dockerfile
+      no_cache: true                  # always rebuild app image without layer cache
+    ports:
+      - "8082:8081"
+    environment:
+      # Override Spring Boot config to point to Docker service names
+      # instead of 127.0.0.1
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/locale?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Europe/Berlin
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
+      SPRING_REDIS_HOST: redis
+      SPRING_REDIS_PORT: 6379
+      SPRING_REDIS_PASSWORD:
+      SPRING_PROFILES_ACTIVE: docker
+    depends_on:
+      mysql:
+        condition: service_healthy    # wait until MySQL is ready
+      redis:
+        condition: service_started
+
+volumes:
+  mysql-data:
+  redis-data:

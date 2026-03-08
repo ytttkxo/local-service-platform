@@ -3,27 +3,30 @@ package com.hmdp.config;
 import org.redisson.Redisson;
 import org.redisson.api.RedissonClient;
 import org.redisson.config.Config;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-/**
- * ClassName:RedissonConfig
- * Package: com.hmdp.config
- * Description:
- *
- * @Autor: Tong
- * @Create: 10.01.26 - 15:39
- * @Version: v1.0
- *
- */
 @Configuration
 public class RedissonConfig {
+
+    @Value("${spring.redis.host}")
+    private String redisHost;
+
+    @Value("${spring.redis.port}")
+    private int redisPort;
+
+    @Value("${spring.redis.password:}")
+    private String redisPassword;
 
     @Bean
     public RedissonClient redissonClient() {
         Config config = new Config();
-        config.useSingleServer().setAddress("redis://127.0.0.1:6379").setPassword("123456");
-
+        org.redisson.config.SingleServerConfig server = config.useSingleServer()
+                .setAddress("redis://" + redisHost + ":" + redisPort);
+        if (redisPassword != null && !redisPassword.trim().isEmpty()) {
+            server.setPassword(redisPassword);
+        }
         return Redisson.create(config);
     }
 }

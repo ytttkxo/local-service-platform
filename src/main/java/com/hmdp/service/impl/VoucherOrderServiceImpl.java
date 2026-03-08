@@ -69,6 +69,13 @@ public class VoucherOrderServiceImpl extends ServiceImpl<VoucherOrderMapper, Vou
 
     @PostConstruct
     private void init() {
+        // Ensure the stream and consumer group exist before starting the consumer
+        try {
+            stringRedisTemplate.opsForStream().createGroup("stream.orders", "g1");
+        } catch (Exception e) {
+            // Group already exists or stream already exists — safe to ignore
+            log.debug("Consumer group init: {}", e.getMessage());
+        }
         seckill_order_executor.submit(new VoucherOrderHandler());
     }
 
