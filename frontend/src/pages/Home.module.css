@@ -1,0 +1,252 @@
+.hero {
+  text-align: center;
+  padding: 48px 0 40px;
+}
+
+.heroTitle {
+  font-family: var(--font-display);
+  font-size: 42px;
+  letter-spacing: -0.03em;
+  line-height: 1.15;
+  margin-bottom: 12px;
+}
+
+.heroTitle em {
+  color: var(--color-accent);
+  font-style: italic;
+}
+
+.heroSub {
+  font-size: 17px;
+  color: var(--color-text-secondary);
+  font-weight: 300;
+}
+
+/* Categories */
+.sectionTitle {
+  font-family: var(--font-display);
+  font-size: 24px;
+  margin-bottom: 20px;
+  letter-spacing: -0.02em;
+}
+
+.categories {
+  margin-bottom: 48px;
+}
+
+.categoryGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 12px;
+}
+
+.categoryCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 20px 12px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border-light);
+  border-radius: var(--radius-lg);
+  transition: all 0.25s ease;
+  text-decoration: none;
+}
+
+.categoryCard:hover {
+  border-color: var(--color-accent-light);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+.categoryIcon {
+  font-size: 28px;
+  line-height: 1;
+}
+
+.categoryName {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  text-align: center;
+}
+
+/* Blog Feed */
+.feed {
+  margin-bottom: 48px;
+}
+
+.blogGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 24px;
+}
+
+.blogCard {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border-light);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  transition: all 0.25s ease;
+}
+
+.blogCard:hover {
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-3px);
+}
+
+.blogImage {
+  display: block;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  background: var(--color-border-light);
+}
+
+.blogImage img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+
+.blogCard:hover .blogImage img {
+  transform: scale(1.04);
+}
+
+.blogBody {
+  padding: 20px;
+}
+
+.blogTitle {
+  font-family: var(--font-display);
+  font-size: 18px;
+  margin-bottom: 8px;
+  letter-spacing: -0.01em;
+  line-height: 1.3;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.blogExcerpt {
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+  margin-bottom: 16px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.blogMeta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.blogAuthor {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--color-text-secondary);
+}
+
+.blogAvatar {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: var(--color-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+}
+
+.blogAvatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.blogActions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 13px;
+  color: var(--color-text-tertiary);
+}
+
+.likeBtn {
+  font-size: 13px;
+  color: var(--color-text-tertiary);
+  transition: color 0.2s;
+  padding: 4px 0;
+}
+
+.likeBtn:hover {
+  color: var(--color-accent);
+}
+
+.likeBtn.liked {
+  color: var(--color-accent);
+}
+
+.commentCount {
+  font-size: 13px;
+}
+
+/* Loader */
+.loader {
+  display: flex;
+  justify-content: center;
+  padding: 32px 0;
+}
+
+.spinner {
+  width: 28px;
+  height: 28px;
+  border: 2.5px solid var(--color-border);
+  border-top-color: var(--color-accent);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.endText {
+  text-align: center;
+  padding: 24px 0;
+  color: var(--color-text-tertiary);
+  font-size: 14px;
+  font-style: italic;
+}
+
+@media (max-width: 640px) {
+  .heroTitle {
+    font-size: 30px;
+  }
+
+  .categoryGrid {
+    grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+    gap: 8px;
+  }
+
+  .categoryCard {
+    padding: 14px 8px;
+  }
+
+  .blogGrid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+}

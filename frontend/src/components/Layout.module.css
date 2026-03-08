@@ -1,0 +1,139 @@
+.wrapper {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(250, 248, 245, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--color-border-light);
+}
+
+.headerInner {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 0 24px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  gap: 32px;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+}
+
+.logoMark {
+  width: 32px;
+  height: 32px;
+  background: var(--color-accent);
+  color: white;
+  font-family: var(--font-display);
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-sm);
+}
+
+.logoText {
+  font-family: var(--font-display);
+  font-size: 22px;
+  color: var(--color-text);
+  letter-spacing: -0.02em;
+}
+
+.nav {
+  flex: 1;
+  display: flex;
+  gap: 24px;
+}
+
+.navLink {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  transition: color 0.2s;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.navLink:hover {
+  color: var(--color-accent);
+}
+
+.userArea {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: var(--color-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+}
+
+.avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.logoutBtn {
+  font-size: 13px;
+  color: var(--color-text-tertiary);
+  transition: color 0.2s;
+}
+
+.logoutBtn:hover {
+  color: var(--color-accent);
+}
+
+.main {
+  flex: 1;
+  max-width: 1120px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 32px 24px;
+}
+
+.footer {
+  border-top: 1px solid var(--color-border-light);
+  padding: 32px 24px;
+  text-align: center;
+  color: var(--color-text-tertiary);
+  font-size: 13px;
+  letter-spacing: 0.02em;
+}
+
+@media (max-width: 640px) {
+  .headerInner {
+    padding: 0 16px;
+    gap: 16px;
+  }
+
+  .main {
+    padding: 20px 16px;
+  }
+
+  .nav {
+    display: none;
+  }
+}

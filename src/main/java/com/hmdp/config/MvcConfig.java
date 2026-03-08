@@ -33,9 +33,9 @@ public class MvcConfig implements WebMvcConfigurer {
                         "/voucher/**",
                         "/shop-type/**",
                         "/upload/**",
-                        "/blog/hot",
-                        "/user/code",
-                        "/user/login"
+                        "/blog/**",
+                        "/follow/**",
+                        "/user/**"
                 ).order(1);
         registry.addInterceptor(new RefreshInterceptor(stringRedisTemplate)).addPathPatterns("/**").order(0);
     }
