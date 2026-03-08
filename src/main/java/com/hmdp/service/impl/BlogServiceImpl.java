@@ -4,6 +4,8 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.hmdp.dto.BusinessException;
+import com.hmdp.dto.ErrorCode;
 import com.hmdp.dto.Result;
 import com.hmdp.dto.ScrollResult;
 import com.hmdp.dto.UserDTO;
@@ -64,7 +66,7 @@ public class BlogServiceImpl extends ServiceImpl<BlogMapper, Blog> implements IB
         // 1. Query blog
         Blog blog = getById(id);
         if(blog == null){
-            return Result.fail("Blog doesn't exist");
+            throw new BusinessException(ErrorCode.BLOG_NOT_FOUND);
         }
         // 2. Query about the relevant users
         queryBlogUser(blog);
@@ -140,7 +142,7 @@ public class BlogServiceImpl extends ServiceImpl<BlogMapper, Blog> implements IB
         // 2. Save the blog post
         boolean isSuccess = save(blog);
         if (!isSuccess) {
-            return Result.fail("Failed to add blog!");
+            throw new BusinessException(ErrorCode.BLOG_SAVE_FAILED);
         }
         // 3. Query all followers of the blog author
         List<Follow> follows = followService.query().eq("follow_user_id", user.getId()).list();

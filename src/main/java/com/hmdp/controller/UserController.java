@@ -2,6 +2,8 @@ package com.hmdp.controller;
 
 
 import cn.hutool.core.bean.BeanUtil;
+import com.hmdp.dto.BusinessException;
+import com.hmdp.dto.ErrorCode;
 import com.hmdp.dto.LoginFormDTO;
 import com.hmdp.dto.Result;
 import com.hmdp.dto.UserDTO;
@@ -47,8 +49,8 @@ public class UserController {
     @Operation(summary = "Logout")
     @PostMapping("/logout")
     public Result logout() {
-        // TODO 实现登出功能
-        return Result.fail("功能未完成");
+        // TODO implement logout
+        throw new BusinessException(ErrorCode.NOT_IMPLEMENTED);
     }
 
     @Operation(summary = "Get current user", description = "Get logged-in user info from ThreadLocal")

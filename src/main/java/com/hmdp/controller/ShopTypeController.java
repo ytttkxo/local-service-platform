@@ -3,6 +3,8 @@ package com.hmdp.controller;
 
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
+import com.hmdp.dto.BusinessException;
+import com.hmdp.dto.ErrorCode;
 import com.hmdp.dto.Result;
 import com.hmdp.entity.ShopType;
 import com.hmdp.service.IShopTypeService;
@@ -45,7 +47,7 @@ public class ShopTypeController {
         List<ShopType> typeList = typeService.query().orderByAsc("sort").list();
 
         if (typeList ==  null || typeList.isEmpty()) {
-            return Result.fail("shop type list is empty");
+            throw new BusinessException(ErrorCode.NOT_FOUND, "No shop types found");
         }
 
         stringRedisTemplate.opsForValue().set(

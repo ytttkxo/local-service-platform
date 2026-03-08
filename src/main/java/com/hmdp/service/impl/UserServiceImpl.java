@@ -5,6 +5,8 @@ import cn.hutool.core.bean.copier.CopyOptions;
 import cn.hutool.core.lang.UUID;
 import cn.hutool.core.util.RandomUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.hmdp.dto.BusinessException;
+import com.hmdp.dto.ErrorCode;
 import com.hmdp.dto.LoginFormDTO;
 import com.hmdp.dto.Result;
 import com.hmdp.dto.UserDTO;
@@ -45,7 +47,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         // 1. Validate the phone number
         if (RegexUtils.isPhoneInvalid(phone)) {
             // 2. If invalid, return an error message
-            return Result.fail("the phone number is invalid");
+            throw new BusinessException(ErrorCode.INVALID_PHONE);
         }
 
         // 3. If valid, generate a verification code
@@ -66,7 +68,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         String phone = loginForm.getPhone();
         if (RegexUtils.isPhoneInvalid(phone)) {
             // If invalid, return an error message
-            return Result.fail("the phone number is invalid");
+            throw new BusinessException(ErrorCode.INVALID_PHONE);
         }
 
         // 2. Validate the verification code by redis
@@ -74,7 +76,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         String code = loginForm.getCode();
         if (cacheCode == null || !cacheCode.equals(code)) {
             // 3. If they do not match, return an error
-            return Result.fail("the code is invalid");
+            throw new BusinessException(ErrorCode.INVALID_CODE);
         }
 
         // 4. If they match, query the user by phone number

@@ -5,6 +5,8 @@ import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.hmdp.dto.BusinessException;
+import com.hmdp.dto.ErrorCode;
 import com.hmdp.dto.Result;
 import com.hmdp.entity.Shop;
 import com.hmdp.mapper.ShopMapper;
@@ -61,7 +63,7 @@ public class ShopServiceImpl extends ServiceImpl<ShopMapper, Shop> implements IS
         Shop shop = cacheClient.queryWithLogicalExpire(CACHE_SHOP_KEY, id, Shop.class, this::getById, 20L, TimeUnit.SECONDS);
 
         if (shop == null) {
-            return Result.fail("the shop does not exist");
+            throw new BusinessException(ErrorCode.SHOP_NOT_FOUND);
         }
         // 7. Return the result
         return Result.ok(shop);
@@ -228,7 +230,7 @@ public class ShopServiceImpl extends ServiceImpl<ShopMapper, Shop> implements IS
     public Result update(Shop shop) {
         Long id = shop.getId();
         if (id == null) {
-            return Result.fail("the shop id can't be empty!");
+            throw new BusinessException(ErrorCode.BAD_REQUEST, "Shop id is required");
         }
         // 1. update database
         updateById(shop);

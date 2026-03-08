@@ -2,6 +2,8 @@ package com.hmdp.controller;
 
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.StrUtil;
+import com.hmdp.dto.BusinessException;
+import com.hmdp.dto.ErrorCode;
 import com.hmdp.dto.Result;
 import com.hmdp.utils.SystemConstants;
 import lombok.extern.slf4j.Slf4j;
@@ -38,7 +40,7 @@ public class UploadController {
     public Result deleteBlogImg(@RequestParam("name") String filename) {
         File file = new File(SystemConstants.IMAGE_UPLOAD_DIR, filename);
         if (file.isDirectory()) {
-            return Result.fail("错误的文件名称");
+            throw new BusinessException(ErrorCode.INVALID_FILENAME);
         }
         FileUtil.del(file);
         return Result.ok();

@@ -1,6 +1,8 @@
 package com.hmdp.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
+import com.hmdp.dto.BusinessException;
+import com.hmdp.dto.ErrorCode;
 import com.hmdp.dto.Result;
 import com.hmdp.entity.VoucherOrder;
 import com.hmdp.mapper.VoucherOrderMapper;
@@ -182,7 +184,7 @@ public class VoucherOrderServiceImpl extends ServiceImpl<VoucherOrderMapper, Vou
             int r = result.intValue();
             if (r != 0) {
                 // 2.1 Not 0: means the user is not eligible to purchase
-                return Result.fail(r == 1 ? "Insufficient stock" : "Each user can place only one order");
+                throw new BusinessException(r == 1 ? ErrorCode.STOCK_INSUFFICIENT : ErrorCode.ORDER_DUPLICATE);
             }
             proxy = (IVoucherOrderService) AopContext.currentProxy();
             // 3. Return order ID
@@ -202,7 +204,7 @@ public class VoucherOrderServiceImpl extends ServiceImpl<VoucherOrderMapper, Vou
         int r = result.intValue();
         if (r != 0) {
             // 2.1 Not 0: means the user is not eligible to purchase
-            return Result.fail(r == 1 ? "Insufficient stock" : "Each user can place only one order");
+            throw new BusinessException(r == 1 ? ErrorCode.STOCK_INSUFFICIENT : ErrorCode.ORDER_DUPLICATE);
         }
         // 2.2 Equals 0: eligible to purchase, save order information to the message queue
         VoucherOrder voucherOrder = new VoucherOrder();
